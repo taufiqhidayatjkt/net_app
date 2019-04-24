@@ -30,11 +30,25 @@ function delPegawaiData($nip){
   mysqli_close($conn);
 }
 
+// function editPegawaiData($id){
+//   $conn = connect();
+//   $query = "SELECT * FROM tb_pegawai WHERE nip='".$id."'";
+//   $result = mysqli_query($conn,$query) or die (mysqli_error($conn));
+//   $row = mysqli_fetch_assoc($result);
+//   return $row;
+// }
+
 function editPegawaiData($id){
   $conn = connect();
-  $query = "SELECT * FROM tb_pegawai WHERE nip='".$id."'";
-  $result = mysqli_query($conn,$query) or die (mysqli_error($conn));
-  $row = mysqli_fetch_assoc($result);
+  $query = "SELECT * FROM tb_pegawai WHERE nip=?";
+  if ($stmt = mysqli_prepare($conn,$query) or die (mysqli_error($conn))) {
+    mysqli_stmt_bind_param($stmt,"s",$id);
+    mysqli_stmt_execute($stmt) or die (mysqli_error($conn));
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+  }
+  mysqli_close($conn);
   return $row;
 }
 

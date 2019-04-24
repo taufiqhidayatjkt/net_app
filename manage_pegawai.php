@@ -60,10 +60,12 @@ if (isset($submitted)) {
 
 $data = array();
 $nama = "";
+$readonly = "";
 if(isset($act) && $act=="del"){
   delPegawaiData($id);
   header("Location: index.php?mn=pns");
 }elseif ($act=='edit') {
+  $readonly = "readonly";
   $data =  editPegawaiData($id);
   $nip = $data['nip'];
   $namaDepan = $data['nama_depan'];
@@ -82,7 +84,7 @@ if(isset($act) && $act=="del"){
   <div class="form-group">
     <label for="txtNama" class="control-label col-xs-4">NIP</label>
     <div class="col-xs-4">
-      <input id="txtNama" name="txtNIP" type="text" required="required" maxlength="19" class="form-control" autofocus value="<?php echo @$nip;?>">
+      <input id="txtNama" name="txtNIP" type="text" required="required" <?php echo $readonly;?> maxlength="19" class="form-control" autofocus value="<?php echo @$nip;?>">
     </div>
   </div>
   <div class="form-group">
