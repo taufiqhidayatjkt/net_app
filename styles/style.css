@@ -1,5 +1,5 @@
 body {
-  background: #333;
+  background: #5aafbd;
   margin: 5px 0;
 }
 
@@ -8,7 +8,9 @@ body {
   width: 80%;
   height: auto;
   margin: 0 auto;
-  border: solid 1px #fff;
+  border-top: solid 1px #fff;
+  border-left: solid 1px #fff;
+  border-right: solid 1px #fff;
 }
 
 .content {
@@ -16,6 +18,12 @@ body {
   float: left;
   background: blue;
   width: 100%;
+  border:solid 1px #fff;
+}
+nav {
+  float: left;
+  width: 100%;
+  background: #a52a2a61;
 }
 
 nav a {
@@ -31,7 +39,7 @@ nav a {
 
 nav a:hover {
   color: #fff;
-  background: yellow;
+  background: brown;
 }
 
 main {
@@ -40,6 +48,7 @@ main {
   width: 100%;
   background:#abcdef;
   padding: 10px;
+  border:solid 1px #fff;
 }
 
 footer {
@@ -52,4 +61,23 @@ footer {
   font-size: 11px;
   background: #000;
   color: #fff;
+}
+
+.login {
+  margin: 100px auto;
+  padding: 0 20px 20px;
+  background: #fff;
+  width: 30%;
+  border-radius:15px;
+}
+
+.user_profile {
+  float: right;
+  text-align: right;
+  width: 30%;
+  padding-top:8px;
+  padding-right: 10px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
 }

@@ -1,6 +1,7 @@
 <?php
 include_once("koneksi.php");
 $mn = filter_input(INPUT_GET,'mn');
+session_start();
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,6 +18,11 @@ $mn = filter_input(INPUT_GET,'mn');
 
   </head>
   <body>
+  <?php
+  if (!isset($_SESSION['user_log'])) {
+    include_once('login.php');
+  }else {
+  ?>
   <div class="page">
     <div class="content">
     <nav>
@@ -24,6 +30,12 @@ $mn = filter_input(INPUT_GET,'mn');
         <a href="?mn=org" <?=((isset($mn) && $mn=='org') ? 'style="background:brown;"' : '');?>>Organisasi</a>
         <a href="?mn=pns" <?=((isset($mn) && $mn=='pns') ? 'style="background:brown;"' : '');?>>Pegawai</a>
         <a href="?mn=about" <?=((isset($mn) && $mn=='about') ? 'style="background:brown;"' : '');?>>About</a>
+        <a href="?mn=logout">Logout</a>
+        <div class="user_profile">
+            <?php
+              echo $_SESSION['user_nama'].' ('.$_SESSION['user_nip'].')';
+            ?>
+        </div>
     </nav>
     <main>
     <?php
@@ -45,7 +57,11 @@ $mn = filter_input(INPUT_GET,'mn');
           // code...
           include_once('about.php');
           break;
-
+        case 'logout':
+          // code...
+          session_destroy();
+          header('location:index.php');
+          break;
         default:
           // code...
           echo "Selamat Datang... ";
@@ -56,6 +72,7 @@ $mn = filter_input(INPUT_GET,'mn');
    <footer>created by. opick</footer>
   </div>
   </div>
+  <?php } ?>
   </body>
 </html>
 

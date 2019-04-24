@@ -4,19 +4,57 @@ include_once('db_function/funct_org.php');
 $submitted = filter_input(INPUT_POST, 'btnSubmit');
 $act = filter_input(INPUT_GET,"act");
 $id = filter_input(INPUT_GET,"id");
+$pesan = "";
 
 if (isset($submitted)) {
   $nip = filter_input(INPUT_POST,'txtNIP');
   $namaDepan = filter_input(INPUT_POST,'txtNamaDepan');
   $namaBelakang = filter_input(INPUT_POST,'txtNamaBelakang');
   $jenisKelamin = filter_input(INPUT_POST,'txtJenisKelamin');
+  $username = filter_input(INPUT_POST,'txtUsername');
+  $password = filter_input(INPUT_POST,'txtPassword');
+  $repassword = filter_input(INPUT_POST,'txtRePassword');
   $idOrg = filter_input(INPUT_POST,'txtIdOrg');
 
   if (isset($act) && $act=='edit' && !empty($id)) {
-    updatePegawaiData($namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$nip);
-    header("Location: index.php?mn=pns");
+
+    if ($password=='') {
+      // code...
+      updatePegawaiDataNonAkun($namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$nip);
+      header("Location: index.php?mn=pns");
+    }else {
+      // code...
+      if(!empty($password) && $password==$repassword) {
+        updatePegawaiData($namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$username,$password,$nip);
+        header("Location: index.php?mn=pns");
+      }else {
+        $pesan = '<div class="alert alert-danger">Password tidak sama!</div>';
+      }
+    }
+
+
   }else{
-    addPegawaiData($nip,$namaDepan,$namaBelakang,$jenisKelamin,$idOrg);
+
+    $ceknip = editPegawaiData($nip);
+    if($ceknip['nip']){
+      $pesan = '<div class="alert alert-danger">NIP telah terdaftar!</div>';
+    }else {
+
+      if ($password=='') {
+        // code...
+        $pesan = '<div class="alert alert-danger">Password tidak boleh kosong!</div>';
+      }else {
+        // code...
+        if($password==$repassword) {
+          addPegawaiData($nip,$namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$username,$password);
+        }else {
+          $pesan = '<div class="alert alert-danger">Password tidak sama!</div>';
+        }
+      }
+
+    }
+
+
   }
 }
 
@@ -31,6 +69,8 @@ if(isset($act) && $act=="del"){
   $namaDepan = $data['nama_depan'];
   $namaBelakang = $data['nama_belakang'];
   $jenisKelamin  = $data['jenis_kelamin'];
+  $username  = $data['username'];
+  $password  = $data['password'];
   $idOrg = $data['tb_organisasi_id'];
 }
 ?>
@@ -38,6 +78,7 @@ if(isset($act) && $act=="del"){
 <form class="form-horizontal" method="post">
   <fieldset>
   <legend>Form Tambah Pegawai</legend>
+  <?php echo $pesan;?>
   <div class="form-group">
     <label for="txtNama" class="control-label col-xs-4">NIP</label>
     <div class="col-xs-4">
@@ -54,6 +95,24 @@ if(isset($act) && $act=="del"){
     <label for="txtNama" class="control-label col-xs-4">Nama Belakang</label>
     <div class="col-xs-4">
       <input id="txtNama" name="txtNamaBelakang" type="text" required="required" class="form-control" value="<?php echo @$namaBelakang;?>">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="txtUsername" class="control-label col-xs-4">Username</label>
+    <div class="col-xs-3">
+      <input id="txtUsername" name="txtUsername" type="text" required="required" class="form-control" value="<?php echo @$username;?>">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="txtPassword" class="control-label col-xs-4">Password</label>
+    <div class="col-xs-3">
+      <input id="txtPassword" name="txtPassword" type="text" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="txtRePassword" class="control-label col-xs-4">Ulangi Password</label>
+    <div class="col-xs-3">
+      <input id="txtRePassword" name="txtRePassword" type="text" class="form-control">
     </div>
   </div>
   <div class="form-group">

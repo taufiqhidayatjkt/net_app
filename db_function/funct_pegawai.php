@@ -6,11 +6,11 @@ function viewPegawaiData(){
   return $result;
 }
 
-function addPegawaiData($nip,$namaDepan,$namaBelakang,$jenisKelamin,$idOrg){
+function addPegawaiData($nip,$namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$username,$password){
   $conn = connect();
-  $query = "INSERT INTO tb_pegawai (nip,nama_depan,nama_belakang,jenis_kelamin,tb_organisasi_id) VALUES (?,?,?,?,?)";
+  $query = "INSERT INTO tb_pegawai (nip,nama_depan,nama_belakang,jenis_kelamin,tb_organisasi_id,username,password) VALUES (?,?,?,?,?,?,MD5(?))";
   if ($stmt = mysqli_prepare($conn,$query) or die (mysqli_error($conn))) {
-    mysqli_stmt_bind_param($stmt,"sssii", $nip,$namaDepan,$namaBelakang,$jenisKelamin,$idOrg);
+    mysqli_stmt_bind_param($stmt,"sssiiss", $nip,$namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$username,$password);
     mysqli_stmt_execute($stmt) or die (mysqli_error($conn));
     mysqli_commit($conn);
     mysqli_stmt_close($stmt);
@@ -38,7 +38,19 @@ function editPegawaiData($id){
   return $row;
 }
 
-function updatePegawaiData($namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$nip){
+function updatePegawaiData($namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$username,$password,$nip){
+  $conn = connect();
+  $query = "UPDATE tb_pegawai SET nama_depan=?, nama_belakang=?, jenis_kelamin=?, tb_organisasi_id=?, username=?, password=MD5(?) WHERE nip=?";
+  if ($stmt = mysqli_prepare($conn,$query) or die (mysqli_error($conn))) {
+    mysqli_stmt_bind_param($stmt,"ssiisss", $namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$username,$password,$nip);
+    mysqli_stmt_execute($stmt) or die (mysqli_error($conn));
+    mysqli_commit($conn);
+    mysqli_stmt_close($stmt);
+  }
+  mysqli_close($conn);
+}
+
+function updatePegawaiDataNonAkun($namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$nip){
   $conn = connect();
   $query = "UPDATE tb_pegawai SET nama_depan=?, nama_belakang=?, jenis_kelamin=?, tb_organisasi_id=? WHERE nip=?";
   if ($stmt = mysqli_prepare($conn,$query) or die (mysqli_error($conn))) {
@@ -48,4 +60,19 @@ function updatePegawaiData($namaDepan,$namaBelakang,$jenisKelamin,$idOrg,$nip){
     mysqli_stmt_close($stmt);
   }
   mysqli_close($conn);
+}
+
+function login($username,$password){
+  $conn = connect();
+  $query = "SELECT nip,nama_depan,nama_belakang FROM tb_pegawai WHERE username=? and password=md5(?)";
+  if ($stmt = mysqli_prepare($conn,$query) or die (mysqli_error($conn))) {
+    mysqli_stmt_bind_param($stmt,"ss",$username,$password);
+    mysqli_stmt_execute($stmt) or die (mysqli_error($conn));
+    mysqli_stmt_bind_result($stmt, $nip, $nama_depan, $nama_belakang);
+    mysqli_stmt_fetch($stmt);
+    $result = array('nip'=>$nip, 'nama_depan'=>$nama_depan, 'nama_belakang'=>$nama_belakang);
+    mysqli_stmt_close($stmt);
+  }
+  mysqli_close($conn);
+  return $result;
 }
